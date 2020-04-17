@@ -1,0 +1,61 @@
+{
+	"manifest_version": 2,
+	"name": "视频解析接口",
+	"version": "1.0",
+	"description": "视频解析接口",
+	"author": "mibb",
+	"icons": {
+		"16": "src/icons/icon-16.png",
+		"128": "src/icons/icon-128.png"
+	},
+	"permissions": [
+		"contextMenus",
+		"tabs",
+		"notifications",
+		"webRequest",
+		"webRequestBlocking",
+		"storage",
+		"http://*/*",
+		"https://*/*",
+		"declarativeContent"
+	],
+	"background": {
+		// "scripts": [
+		// 	"background.js"
+		// ],
+		"page": "src/background.html"
+	},
+	// "page_action": {
+	// 	"default_icon": "icon.png",
+	// 	"default_title": "pageAction",
+	// 	"default_popup": "popup.html"
+	// },
+	"homepage_url": "http://blog.mibb005.website/",
+	// // 覆盖浏览器默认页面
+	// "chrome_url_overrides": {
+	// 	// 覆盖浏览器默认的新标签页
+	// 	"newtab": "options.html"
+	// },
+	"options_ui": {
+		"page": "src/options.html"
+	},
+	"omnibox": { "keyword" : "go" },
+	"browser_action": {
+		"default_icon": "src/icons/icon-16.png",
+		"default_popup": "src/popup.html"
+	},
+	"content_scripts": [{
+		"matches": [
+			"https://v.qq.com/x/cover/*",
+			"https://v.youku.com/v_show/*",
+			"https://www.iqiyi.com/v_19*"
+		],
+		"js": [
+			"src/js/content-script.js"
+		],
+		"run_at": "document_end"
+	}],
+	"web_accessible_resources": [
+		"src/js/inject.js"
+	]
+}
