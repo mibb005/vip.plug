@@ -17,6 +17,8 @@ function init() {
 	})
 }
 
+init();
+
 function setbase(u) {
 	baseurl = u;
 	chrome.storage.sync.get({ 'baseurl': u }, function (result) {
@@ -41,17 +43,23 @@ function isEmpty(obj) {
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	console.log('收到来自content-script的消息：');
 	if (request.url) {
-		url = request.url
-		console.log(request.url);
-		chrome.notifications.create(null, {
-			type: 'basic',
-			iconUrl: 'icon.png',
-			title: '解析成功',
-			message: '右键视频解析开始vip播放'
-		});
+		if (showBadge) {
+			openUrlCurrentTab(baseurl + request.url)
+		}
+		else {
+			url = request.url
+			console.log(request.url);
+			chrome.notifications.create(null, {
+				type: 'basic',
+				iconUrl: 'icon.png',
+				title: '解析成功',
+				message: '右键视频解析开始vip播放'
+			});
 
-		chrome.browserAction.setBadgeText({ text: 'New' });
-		chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
+			chrome.browserAction.setBadgeText({ text: 'New' });
+			chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
+		}
+
 	} else {
 		url = '';
 	}
@@ -196,23 +204,23 @@ chrome.omnibox.onInputEntered.addListener((text) => {
 // chrome.pageAction.hide(tabId) //隐藏图标；
 
 
-// var showBadge = false;
-// var menuId = chrome.contextMenus.create({
-// 	title: '显示图标上的Badge',
-// 	type: 'checkbox',
-// 	checked: false,
-// 	onclick: function () {
-// 		if (!showBadge) {
-// 			chrome.browserAction.setBadgeText({ text: 'New' });
-// 			chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
-// 			chrome.contextMenus.update(menuId, { title: '隐藏图标上的Badge', checked: true });
-// 		}
-// 		else {
-// 			chrome.browserAction.setBadgeText({ text: '' });
-// 			chrome.browserAction.setBadgeBackgroundColor({ color: [0, 0, 0, 0] });
-// 			chrome.contextMenus.update(menuId, { title: '显示图标上的Badge', checked: false });
-// 		}
-// 		showBadge = !showBadge;
-// 	}
-// });
+var showBadge = false;
+var menuId = chrome.contextMenus.create({
+	title: '不播放解析视频',
+	type: 'checkbox',
+	checked: false,
+	onclick: function () {
+		if (!showBadge) {
+			// chrome.browserAction.setBadgeText({ text: 'New' });
+			// chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
+			chrome.contextMenus.update(menuId, { title: '直接播放解析视频', checked: true });
+		}
+		else {
+			// chrome.browserAction.setBadgeText({ text: '' });
+			// chrome.browserAction.setBadgeBackgroundColor({ color: [0, 0, 0, 0] });
+			chrome.contextMenus.update(menuId, { title: '不播放解析视频', checked: false });
+		}
+		showBadge = !showBadge;
+	}
+});
 
